@@ -39,13 +39,9 @@ const getItems = async (): Promise<TarkovToolsItem[]> => {
 }
 
 /**Will return lastLowPrice if it's defined, else will return the highest value in sellFor */
-const itemLowestPrice = (item: TarkovToolsItem): number | null => {
+const itemLowestPrice = (item: TarkovToolsItem): number => {
     // null and 0 are both falsy in js
     if (!item.lastLowPrice) {
-        if (item.sellFor.length === 0) {
-            return null
-        }
-
         const lowestPrice = item.sellFor.sort((a, b) => b.price - a.price)[0]
 
         return lowestPrice.price

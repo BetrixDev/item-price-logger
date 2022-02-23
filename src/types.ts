@@ -13,5 +13,5 @@ interface TarkovToolsResponse {
 
 interface PriceHistory {
     date: number
-    price: number | null
+    price: number
 }
