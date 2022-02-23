@@ -7,8 +7,8 @@ A simple REST API written in [Node.js](https://nodejs.org/en/) which will log th
 
 # Request
 ```ts
-    const request = `http://${SERVER_HOSTNAME}:${SERVER_PORT}/${itemId}/${time}`
-    const example = `http://localhost:8000/59faff1d86f7746c51718c9c/1`
+    const requestUrl = `http://${SERVER_HOSTNAME}:${SERVER_PORT}/${itemId}/${time}`
+    const exampleUrl = `http://localhost:8000/59faff1d86f7746c51718c9c/1`
 ```
 -   **itemId**: The id of the item requested
 -   **time**: The amount of days of prices requested
@@ -56,7 +56,7 @@ A simple REST API written in [Node.js](https://nodejs.org/en/) which will log th
 # Self-Hosting
 
 If you wish to host this API on your own, you are free to do so.
-
+Files are written locally on the machine, this can be changed fairly easily to account for different services
 
 ### Enviroment Variables
 There are some required enviroment variables:
