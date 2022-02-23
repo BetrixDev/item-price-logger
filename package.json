@@ -2,7 +2,7 @@
     "name": "item-price-logger",
     "version": "1.0.0",
     "scripts": {
-        "dev": "ts-node --files ./main.ts",
+        "dev": "ts-node --files ./src/main.ts",
         "build": "tsc",
         "start": "npx pm2 start ./build/main.js --name item-price-logger-api"
     },

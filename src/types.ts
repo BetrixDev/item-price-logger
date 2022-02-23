@@ -1,7 +1,7 @@
 interface TarkovToolsItem {
     id: string
     lastLowPrice: number | null
-    buyFor: {
+    sellFor: {
         source: string
         price: number
     }[]

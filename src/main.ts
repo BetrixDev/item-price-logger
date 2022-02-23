@@ -26,7 +26,7 @@ const query = gql`
         itemsByType(type: any) {
             id
             lastLowPrice
-            buyFor {
+            sellFor {
                 source
                 price
             }
@@ -38,15 +38,15 @@ const getItems = async (): Promise<TarkovToolsItem[]> => {
     return await request<TarkovToolsResponse>('https://tarkov-tools.com/graphql', query).then((res) => res.itemsByType)
 }
 
-/**Will return lastLowPrice if it's defined, else will return the lowest value in buyFor */
+/**Will return lastLowPrice if it's defined, else will return the highest value in sellFor */
 const itemLowestPrice = (item: TarkovToolsItem): number | null => {
     // null and 0 are both falsy in js
     if (!item.lastLowPrice) {
-        if (item.buyFor.length === 0) {
+        if (item.sellFor.length === 0) {
             return null
         }
 
-        const lowestPrice = item.buyFor.sort((a, b) => b.price - a.price)[0]
+        const lowestPrice = item.sellFor.sort((a, b) => b.price - a.price)[0]
 
         return lowestPrice.price
     } else {

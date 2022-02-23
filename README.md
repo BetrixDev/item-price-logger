@@ -65,5 +65,6 @@ There are some required enviroment variables:
 - **SERVER_PORT**: The port in which the API will listen on *(optional might be provived from a hosting service)*
 
 ### Node Commands
-`npm build` will compile to API into Javascript
-`npm start` will start the API using [PM2](https://pm2.keymetrics.io)
+- `npm i` to download all needed dependencies
+- `npm build` will compile to API into Javascript
+- `npm start` will start the API using [PM2](https://pm2.keymetrics.io)
