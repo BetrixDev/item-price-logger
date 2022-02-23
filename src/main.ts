@@ -12,13 +12,13 @@ const DATABASE_LOCATION = process.env.DATABASE_LOCATION as string
 const SERVER_PORT = (process.env.PORT ?? process.env.SERVER_PORT ?? '8000') as string
 const SERVER_HOSTNAME = (process.env.HOSTNAME ?? process.env.SERVER_HOSTNAME ?? 'localhost') as string
 
+if (!DATABASE_LOCATION) {
+    throw new Error('Please specify a DATABASE_LOCATION in .env')
+}
+
 // Check for the database location existing or not
 if (!existsSync(path.join(DATABASE_LOCATION))) {
     throw new Error(`Unknown directory "${DATABASE_LOCATION}" in DATABASE_LOCATION`)
-}
-
-if (!SERVER_PORT) {
-    throw new Error('Please specify a SERVER_PORT in .env')
 }
 
 const query = gql`
