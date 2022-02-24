@@ -27,7 +27,6 @@ const query = gql`
             id
             lastLowPrice
             sellFor {
-                source
                 price
             }
         }
