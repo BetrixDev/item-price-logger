@@ -104,7 +104,7 @@ app.get('/:id/:time', (req, res) => {
 
         const data = JSON.parse(readFileSync(path.join(DATABASE_LOCATION, `${id}.json`)).toString())
 
-        res.status(200).json({ pricehistory: data.slice(Number(`-${time * 24}`)) })
+        res.status(200).json({ pricehistory: data.slice(time * -24) })
     } catch (e) {
         logger.info(NAMESPACE, 'Error handling request', e)
 
