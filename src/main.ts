@@ -45,7 +45,7 @@ const query = gql`
 `
 
 const getItems = async (): Promise<TarkovToolsItem[]> => {
-    return await request<TarkovToolsResponse>('https://tarkov-tools.com/graphql', query).then((res) => res.itemsByType)
+    return await request<TarkovToolsResponse>('https://api.tarkov.dev/graphql', query).then((res) => res.itemsByType)
 }
 
 /**Will return lastLowPrice if it's defined, else will return the highest value in sellFor */
