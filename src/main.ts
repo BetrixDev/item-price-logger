@@ -1,7 +1,7 @@
 import express from 'express'
 import { scheduleJob } from 'node-schedule'
 import { gql, request } from 'graphql-request'
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs'
 import path from 'path'
 import dotenv from 'dotenv'
 import logger from './logger'
@@ -18,7 +18,18 @@ if (!DATABASE_LOCATION) {
 
 // Check for the database location existing or not
 if (!existsSync(path.join(DATABASE_LOCATION))) {
-    throw new Error(`Unknown directory "${DATABASE_LOCATION}" in DATABASE_LOCATION`)
+    try {
+        mkdirSync(DATABASE_LOCATION)
+    } catch {
+        throw new Error(`Unknown directory "${DATABASE_LOCATION}" in DATABASE_LOCATION`)
+    }
+} else {
+    readdirSync(DATABASE_LOCATION).forEach((file) => {
+        // Very simple check, nothing too deep
+        if (!file.endsWith('.json')) {
+            throw new Error(`Invalid files located in ${DATABASE_LOCATION}`)
+        }
+    })
 }
 
 const query = gql`
@@ -43,7 +54,7 @@ const itemLowestPrice = (item: TarkovToolsItem): number => {
     if (!item.lastLowPrice) {
         const lowestPrice = item.sellFor.sort((a, b) => b.price - a.price)[0]
 
-        return lowestPrice.price
+        return lowestPrice?.price ?? undefined
     } else {
         return item.lastLowPrice
     }
@@ -55,36 +66,23 @@ scheduleJob('0 */1 * * *', async () => {
 
     const date = Math.round(Date.now() / 1000) * 1000 // Makes last digits zero for cleaner numbers
 
-    try {
-        const items = await getItems()
+    const items = await getItems()
 
-        items.forEach((item) => {
-            const itemFilePath = path.join(DATABASE_LOCATION, `${item.id}.json`)
+    for (const item of items) {
+        const itemFilePath = path.join(DATABASE_LOCATION, `${item.id}.json`)
 
-            const newData = { date, price: itemLowestPrice(item) }
+        const newData = { date: date, price: itemLowestPrice(item) }
 
-            if (existsSync(itemFilePath)) {
-                let file = JSON.parse(readFileSync(itemFilePath).toString()) as PriceHistory[] // get current data
-                file.push(newData) // append data
-
-                writeFileSync(itemFilePath, JSON.stringify(file))
-            } else {
-                const newFile: PriceHistory[] = [newData]
-
-                writeFileSync(itemFilePath, JSON.stringify(newFile))
-            }
-        })
-    } catch (e) {
-        logger.error(NAMESPACE, 'Error Logging prices, using last known price data', e)
-
-        readdirSync(DATABASE_LOCATION).forEach((fileName) => {
-            const itemFilePath = path.join(DATABASE_LOCATION, fileName)
-
-            let file = JSON.parse(readFileSync(itemFilePath).toString()) as PriceHistory[]
-            file.push(file[file.length - 1]) // push old data forward so that the time between each data point is consistent atleast
+        if (existsSync(itemFilePath)) {
+            let file = JSON.parse(readFileSync(itemFilePath).toString()) as PriceHistory[] // get current data
+            file.push(newData) // append data
 
             writeFileSync(itemFilePath, JSON.stringify(file))
-        })
+        } else {
+            const newFile: PriceHistory[] = [newData]
+
+            writeFileSync(itemFilePath, JSON.stringify(newFile))
+        }
     }
 
     logger.info(NAMESPACE, 'Logged prices')
