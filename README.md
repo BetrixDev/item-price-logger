@@ -1,4 +1,4 @@
-# Tarkov Item Price Logger
+# Tarkov Item Price Logger (very outdated)
 
 A simple REST API written in [Node.js](https://nodejs.org/en/) which will log the price of all items in Escape from Tarkov every hour
 
